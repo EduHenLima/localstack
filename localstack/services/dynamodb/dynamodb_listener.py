@@ -80,14 +80,12 @@ class EventForwarder:
     @classmethod
     def forward_to_targets(cls, records: List[Dict], background: bool = True):
         def _forward(*args):
-            # forward to kinesis stream
             forward_records = cls.prepare_records_to_forward_to_ddb_stream(records)
 
             records_to_kinesis = copy.deepcopy(forward_records)
             cls.forward_to_kinesis_stream(records_to_kinesis)
             # kinesis will forward to lambda
 
-            # forward ddb_streams
             cls.forward_to_ddb_stream(forward_records)
 
         if background:
